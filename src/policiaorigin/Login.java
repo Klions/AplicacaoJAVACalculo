@@ -53,7 +53,7 @@ public class Login extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("LOGIN LSPD ORIGIN");
+        setTitle("ENTRAR LSPD ORIGIN");
         setBackground(new java.awt.Color(0, 0, 0));
         setResizable(false);
 
@@ -119,6 +119,7 @@ public class Login extends javax.swing.JFrame {
                     .addGroup(PainelLoginLayout.createSequentialGroup()
                         .addComponent(jPasswordField1, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
                         .addGap(2, 2, 2)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(Entrar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );

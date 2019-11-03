@@ -25,8 +25,8 @@ public class Sobre extends javax.swing.JFrame {
         getContentPane().setBackground(new java.awt.Color(50, 31, 87));
         patt.setBackground(new java.awt.Color(40, 21, 77));
         IniciarSobre();
+        
     }
-    
     public boolean IniciarSobre(){
         Config config;
         config = new Config();
@@ -41,6 +41,8 @@ public class Sobre extends javax.swing.JFrame {
         int dia = build % 100;
         String Att = dia+"/"+mes+"/"+ano;
         atualizadot.setText("(ATUALIZADO EM: "+Att+")");
+        
+        if(config.VerificarAtt()) txtAtt.setText("ATUALIZAÇÃO DISPONÍVEL PARA: "+config.getVersao());
         return true;
     }
 
@@ -65,7 +67,7 @@ public class Sobre extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         buildt1 = new javax.swing.JLabel();
         patt = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        txtAtt = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("SOBRE");
@@ -126,10 +128,10 @@ public class Sobre extends javax.swing.JFrame {
         buildt1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         buildt1.setText("kli0ns#3092 [discord]");
 
-        jLabel1.setFont(new java.awt.Font("Arial Narrow", 0, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("EXECUTANDO A ÚLTIMA VERSÃO DISPONÍVEL");
+        txtAtt.setFont(new java.awt.Font("Arial Narrow", 0, 18)); // NOI18N
+        txtAtt.setForeground(new java.awt.Color(255, 255, 255));
+        txtAtt.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        txtAtt.setText("EXECUTANDO A ÚLTIMA VERSÃO DISPONÍVEL");
 
         javax.swing.GroupLayout pattLayout = new javax.swing.GroupLayout(patt);
         patt.setLayout(pattLayout);
@@ -137,14 +139,14 @@ public class Sobre extends javax.swing.JFrame {
             pattLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pattLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(txtAtt, javax.swing.GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
                 .addContainerGap())
         );
         pattLayout.setVerticalGroup(
             pattLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pattLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
+                .addComponent(txtAtt)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -203,7 +205,7 @@ public class Sobre extends javax.swing.JFrame {
                     .addComponent(jLabel7))
                 .addGap(18, 18, 18)
                 .addComponent(patt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -249,7 +251,6 @@ public class Sobre extends javax.swing.JFrame {
     private javax.swing.JLabel atualizadot;
     private javax.swing.JLabel buildt;
     private javax.swing.JLabel buildt1;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -258,6 +259,7 @@ public class Sobre extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel patt;
     private javax.swing.JLabel titulo;
+    private javax.swing.JLabel txtAtt;
     private javax.swing.JLabel versaot;
     // End of variables declaration//GEN-END:variables
 }

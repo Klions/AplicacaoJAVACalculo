@@ -834,6 +834,10 @@ public class Prender extends javax.swing.JFrame {
         }else{
             crimes.setText(CrimesTxt);
         }
+        
+        //LIMITE
+        if(valormeses>180)valormeses=180;
+        
         String MultaFormat="$ "+String.format("%,d", valormulta);
         multatotal.setText(MultaFormat);
         String MesesFormat = (valormeses == 1) ? "mês" : "meses";
@@ -852,6 +856,8 @@ public class Prender extends javax.swing.JFrame {
         boolean multa = false;
         if(valormeses>0)preso=true;
         if(valormulta>0)multa=true;
+        
+        
         if(preso && multa){
             Fzeroq = "Prender por "+MesesFormat+" e Multar em "+MultaFormat;
             Comandos="/prender "+ID+" "+valormeses+" e /multar -> "+ID+" -> "+valormulta;
@@ -867,13 +873,13 @@ public class Prender extends javax.swing.JFrame {
         fazeroq.setText(Fzeroq);
         comandos.setText(Comandos);
         
-        
+        String getMax = (valormeses >= 180) ? "[Máx]" : "";
         discord.setText("```json\n"
                 + "Nome: "+Nome+"\n"
                 + "ID: "+ID+"\n"
                 + "Contravenções: "+CrimesTxt+"\n"
                 + "Multa Total: "+MultaFormat+"\n"
-                + "Pena Total: "+valormeses+" meses "+Beneficios+"\n"
+                + "Pena Total: "+MesesFormat+" "+getMax+" "+Beneficios+"\n"
                 + "```");
         
         

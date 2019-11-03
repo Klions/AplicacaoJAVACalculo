@@ -5,7 +5,16 @@
  */
 package policiaorigin;
 
+import policiaorigin.configs.Usuario;
 import java.awt.Toolkit;
+import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import policiaorigin.configs.ConexaoDB;
+import policiaorigin.configs.Config;
+import policiaorigin.configs.HttpDownloadUtility;
 
 
 /**
@@ -23,10 +32,32 @@ public class Login extends javax.swing.JFrame {
         getContentPane().setBackground(new java.awt.Color(50, 31, 87));
         PainelLogin.setBackground(new java.awt.Color(50, 31, 87));
         att.setBackground(new java.awt.Color(222, 82, 82));
-        att.setVisible(false);
-        pack();
         
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("imagens/origin-logo.png")));
+        
+        try {
+            CarregarMysql();
+        } catch (SQLException ex) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        Config config = new Config();
+        att.setVisible(config.VerificarAtt());
+        AtualizarAtt();
+        pack();
+    }
+    
+    public static void CarregarMysql() throws SQLException{
+        ConexaoDB conexao = new ConexaoDB();
+        conexao.ConfigCarregar();
+    }
+    public void AtualizarAtt(){
+        Config config = new Config();
+        versao.setText("VERSÃO: "+config.getVersao());
+        build.setText("BUILD: "+config.getBuild());
+        mensagem.setText(config.getMensagem());
+        versaoatual.setText("Versão Atual: "+config.versao+" / Build: "+config.build);
+        Entrar.setEnabled(!config.getNeed());
+        if(config.getNeed()) txtAtt.setText("ATUALIZAÇÃO NECESSÁRIA");
     }
 
     /**
@@ -48,9 +79,12 @@ public class Login extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         att = new javax.swing.JPanel();
-        jLabel6 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jLabel7 = new javax.swing.JLabel();
+        txtAtt = new javax.swing.JLabel();
+        download = new javax.swing.JButton();
+        build = new javax.swing.JLabel();
+        versao = new javax.swing.JLabel();
+        mensagem = new javax.swing.JLabel();
+        versaoatual = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("ENTRAR LSPD ORIGIN");
@@ -81,6 +115,7 @@ public class Login extends javax.swing.JFrame {
         Entrar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         Entrar.setForeground(new java.awt.Color(51, 51, 51));
         Entrar.setText("ENTRAR");
+        Entrar.setToolTipText("");
         Entrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 EntrarActionPerformed(evt);
@@ -96,7 +131,7 @@ public class Login extends javax.swing.JFrame {
                 .addGroup(PainelLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
                     .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(26, 26, 26)
+                .addGap(18, 18, 18)
                 .addGroup(PainelLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(Nome)
                     .addComponent(jPasswordField1))
@@ -118,8 +153,7 @@ public class Login extends javax.swing.JFrame {
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(PainelLoginLayout.createSequentialGroup()
                         .addComponent(jPasswordField1, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
-                        .addGap(2, 2, 2)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
                 .addComponent(Entrar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -132,76 +166,107 @@ public class Login extends javax.swing.JFrame {
         jLabel5.setText("Desenvolvido por kli0ns#3092 vulgo Henrique Ferraz");
         jLabel5.setEnabled(false);
 
-        jLabel6.setFont(new java.awt.Font("Arial Narrow", 0, 24)); // NOI18N
-        jLabel6.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel6.setText("ATUALIZAÇÃO DISPONÍVEL");
+        txtAtt.setFont(new java.awt.Font("Arial Narrow", 1, 24)); // NOI18N
+        txtAtt.setForeground(new java.awt.Color(255, 255, 255));
+        txtAtt.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        txtAtt.setText("ATUALIZAÇÃO DISPONÍVEL");
 
-        jButton1.setBackground(new java.awt.Color(255, 255, 255));
-        jButton1.setFont(new java.awt.Font("Arial Narrow", 0, 12)); // NOI18N
-        jButton1.setText("DOWNLOAD NOVA VERSÃO");
+        download.setBackground(new java.awt.Color(255, 255, 255));
+        download.setFont(new java.awt.Font("Arial Narrow", 1, 12)); // NOI18N
+        download.setText("DOWNLOAD NOVA VERSÃO");
+        download.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                downloadActionPerformed(evt);
+            }
+        });
 
-        jLabel7.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        jLabel7.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel7.setText("VERSÃO: 20191026");
+        build.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        build.setForeground(new java.awt.Color(245, 245, 245));
+        build.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        build.setText("VERSÃO: 20191026");
+
+        versao.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        versao.setForeground(new java.awt.Color(245, 245, 245));
+        versao.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        versao.setText("VERSÃO: 20191026");
+
+        mensagem.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        mensagem.setForeground(new java.awt.Color(245, 245, 245));
+        mensagem.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        mensagem.setText("MENSAGEM");
 
         javax.swing.GroupLayout attLayout = new javax.swing.GroupLayout(att);
         att.setLayout(attLayout);
         attLayout.setHorizontalGroup(
             attLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(attLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, attLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(attLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(attLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(attLayout.createSequentialGroup()
-                        .addGap(149, 149, 149)
-                        .addGroup(attLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE)
-                            .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(0, 149, Short.MAX_VALUE)))
+                    .addComponent(mensagem, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, attLayout.createSequentialGroup()
+                        .addGroup(attLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(versao, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(build, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addComponent(download, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
+            .addComponent(txtAtt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         attLayout.setVerticalGroup(
             attLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(attLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel6)
+                .addComponent(txtAtt)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel7)
-                .addContainerGap())
+                .addGroup(attLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(attLayout.createSequentialGroup()
+                        .addComponent(versao)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(build))
+                    .addComponent(download, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(mensagem)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        versaoatual.setForeground(new java.awt.Color(255, 255, 255));
+        versaoatual.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        versaoatual.setText("Versão atual:");
+        versaoatual.setEnabled(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(34, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(PainelLogin, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
             .addComponent(att, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(versaoatual, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 24, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(PainelLogin, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(att, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(PainelLogin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel5)
+                .addGap(2, 2, 2)
+                .addComponent(versaoatual)
                 .addContainerGap())
         );
 
@@ -209,11 +274,53 @@ public class Login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void EntrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EntrarActionPerformed
-        new Painel().setVisible(true);
-        this.dispose();// TODO add your handling code here:
+        
         //att.setVisible(true);
         //pack();
+        Usuario usuario = new Usuario();
+        usuario.setNome(Nome.getText());
+        //System.out.print(usuario.GetNome());
+        jLabel1.setText(usuario.getNome());
+        //usuario.savePreference("aaaaa");
+        
+        
+        new Painel().setVisible(true);
+        this.dispose();// TODO add your handling code here:
     }//GEN-LAST:event_EntrarActionPerformed
+
+    private void downloadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downloadActionPerformed
+        Config config = new Config();
+        String fileURL = "http://bastidores.com.br/LSPD_ORIGIN.exe";
+        String NovoNome = "LSPD_ORIGIN";
+        String path=null;
+        try {
+            path = new File(".").getCanonicalPath();
+        } catch (IOException ex) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        System.out.print(path);
+        String saveDir = path;
+        boolean down=false;
+        try {
+            down = HttpDownloadUtility.downloadFile(fileURL, saveDir, NovoNome);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        if(down){
+            try {
+                Process process = new ProcessBuilder(path+"/"+NovoNome+".exe").start();
+                Thread.sleep(1000);
+                this.dispose();
+            } catch (IOException ex) {
+                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+                mensagem.setText("Algum erro aconteceu ao tentar abrir o programa!");
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }else{
+            mensagem.setText("Algum erro aconteceu ao tentar fazer download!");
+        }
+    }//GEN-LAST:event_downloadActionPerformed
 
     /**
      * @param args the command line arguments
@@ -255,14 +362,17 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JTextField Nome;
     private javax.swing.JPanel PainelLogin;
     private javax.swing.JPanel att;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JLabel build;
+    private javax.swing.JButton download;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JPasswordField jPasswordField1;
+    private javax.swing.JLabel mensagem;
+    private javax.swing.JLabel txtAtt;
+    private javax.swing.JLabel versao;
+    private javax.swing.JLabel versaoatual;
     // End of variables declaration//GEN-END:variables
 }

@@ -632,9 +632,28 @@ public class Prender extends javax.swing.JFrame {
                 
             case 41:
                 return 9999999;
-            
+                
+            case 43:
+                return 9;
+            case 44:
+                return 9;  
+            case 45:
+                return 9;  
+            case 46:
+                return 9;  
+            case 47:
+                return 9;  
+            case 48:
+                return 9;  
+            case 49:
+                return 9; 
+            case 50:
+                return 9;  
+            case 51:
+                return 9;  
             case 52:
-                return 99;
+                return 9;     
+            
             default:
                 return 1;
         }
@@ -662,8 +681,28 @@ public class Prender extends javax.swing.JFrame {
                 return 5;   
             case 41:
                 return 10;
-            case 52:
+                
+            case 43:
                 return 20;
+            case 44:
+                return 15;
+            case 45:
+                return 10;
+            case 46:
+                return 10;
+            case 47:
+                return 25;
+            case 48:
+                return 15;
+            case 49:
+                return 15;
+            case 50:
+                return 25;    
+            case 51:
+                return 15;
+            case 52:
+                return 20; 
+                
             default:
                 return 0;
         }
@@ -874,14 +913,21 @@ public class Prender extends javax.swing.JFrame {
         comandos.setText(Comandos);
         
         String getMax = (valormeses >= 180) ? "[Máx]" : "";
-        discord.setText("```json\n"
+        String TextDiscord = "```json\n"
                 + "Nome: "+Nome+"\n"
                 + "ID: "+ID+"\n"
-                + "Contravenções: "+CrimesTxt+"\n"
-                + "Multa Total: "+MultaFormat+"\n"
-                + "Pena Total: "+MesesFormat+" "+getMax+" "+Beneficios+"\n"
-                + "```");
+                + "Contravenções: "+CrimesTxt+"\n";
+        if(multa) TextDiscord += "Multa Total: "+MultaFormat+"\n";
+        if(preso) TextDiscord += "Pena Total: "+MesesFormat+" "+getMax+" "+Beneficios+"\n";
+        TextDiscord += "```";
         
+        discord.setText(TextDiscord);
+        
+        if("".equals(nome.getText())){
+            setTitle("CRIMES E PRISAO LSPD ORIGIN"); 
+        }else{
+            setTitle("CRIMES E PRISAO DE "+nome.getText().toUpperCase());
+        }
         
         return true;
     }
@@ -1262,7 +1308,7 @@ public class Prender extends javax.swing.JFrame {
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("CRIMES E PRISAO LSPD ORIGIN");
         setName("PRISAO LSPD ORIGIN"); // NOI18N
         setResizable(false);
@@ -5403,9 +5449,9 @@ public class Prender extends javax.swing.JFrame {
                 .addContainerGap(15, Short.MAX_VALUE))
         );
 
-        jMenu2.setText("VOLTAR");
+        jMenu2.setText("FECHAR");
 
-        jMenuItem2.setText("PAINEL");
+        jMenuItem2.setText("FECHAR JANELA");
         jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem2ActionPerformed(evt);
@@ -5477,7 +5523,7 @@ public class Prender extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(17, 17, 17)
+                .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -6514,7 +6560,7 @@ public class Prender extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        new Painel().setVisible(true);
+        //new Painel().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 

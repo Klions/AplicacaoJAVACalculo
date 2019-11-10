@@ -12,12 +12,12 @@ import java.util.prefs.Preferences;
  * @author John
  */
 public class Config {
-    public int build = 20191102;
-    public String versao = "0.1 [Alpha]";
+    public int build = 20191109;
+    public String versao = "0.02 [Alpha]";
     Preferences prefs = Preferences.userNodeForPackage(Example.class);
     
-    private static final String buildB = "20191102";
-    private static final String versaoB = "0.1 [Alpha]";
+    private static final String buildB = "20191109";
+    private static final String versaoB = "0.02 [Alpha]";
     private static final String needB = "0";
     private static final String link = "";
     private static final String mensagem = "";
